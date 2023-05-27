@@ -1,0 +1,29 @@
+<div class="paginator">
+    <div class="page-number" *ngFor="let number of totalPages">
+        <button (click)="goToPage(number)">{{number}}</button>
+    </div>
+</div>
+<div>
+    <form [formGroup]="form" (ngSubmit)="filter()">
+        <input placeholder="name" formControlName="name">
+        <select formControlName="status">
+            <option value=""></option>
+            <option value="alive">alive</option>
+            <option value="dead">dead</option>
+            <option value="unknown">unknown</option>
+        </select>
+        <input placeholder="species" formControlName="species">
+        <input placeholder="type" formControlName="type">
+        <select formControlName="gender">
+            <option value=""></option>
+            <option value="female">female</option>
+            <option value="male">male</option>
+            <option value="genderless">genderless</option>
+            <option value="unknown">unknown</option>
+        </select>
+        <button type="submit">Buscar</button>
+    </form>
+</div>
+<div class="container">
+    <app-character [character]="character" *ngFor="let character of characters"></app-character>
+</div>
