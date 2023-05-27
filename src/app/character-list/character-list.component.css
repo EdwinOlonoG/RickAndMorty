@@ -2,7 +2,7 @@
     width: 100%;
     height: 100vh;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
 }
 
 .paginator {
@@ -15,14 +15,14 @@
 
 form {
     width: 250px;
-    height: 100px;
     display: flex;
     flex-direction: column;
     margin: 25px;
 }
 
-input {
+input, select {
     height: 35px;
     border: solid 1px black;
     border-radius: 5px;
+    padding-left: 15px;
 }

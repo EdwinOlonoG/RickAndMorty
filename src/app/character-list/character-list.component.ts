@@ -3,6 +3,7 @@ import { CharacterService } from '../services/character.service';
 import { Character } from '../interfaces/ICharactetrs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
+import { Response } from '../interfaces/IResponse';
 
 @Component({
   selector: 'app-character-list',
@@ -12,7 +13,7 @@ import { FormBuilder } from '@angular/forms';
 export class CharacterListComponent {
 
   public characters: Character[] = [];
-  public currentPage = 0;
+  public currentPage = 1;
   public totalPages: number[] = [];
   public form = this.fb.group({
     "name": [''],
@@ -29,52 +30,40 @@ export class CharacterListComponent {
         this.currentPage = parseInt(page);
       }
     });
-    this.getTotalPages();
   }
 
   ngOnInit() {
-    let ids = this.buildIds();
-    this.characterService.getCharactersById(ids).subscribe({
-      next: (response: any) => {
-        this.characters = response;
-        console.log(this.characters);
-      },
-      error: (error) => {
-        console.log(error);
-      }
-  })
-  }
-
-  private buildIds(): number[] {
-    let characters = this.currentPage * 10;
-    let ids = [];
-    for(let i = 1; i <= 10; i++){
-      ids.push(i + characters);
-    }
-    return ids;
+    this.filter();
   }
 
   public goToPage(page: number) {
     this.router.navigate(['/characters'], {
       queryParams: { page }
     });
-    this.currentPage = page -1;
-    this.ngOnInit();
+    this.currentPage = page;
+    this.filter();
   }
 
-  public getTotalPages() {
-    this.characterService.getCharacters().subscribe((response: any) =>{
-      let totalPages = response.info.pages * 2;
-      console.log(totalPages);
+  public buildPaginator(totalPages: number) {
+    this.totalPages = [];
       for(let i = 1; i < totalPages; i++){
         this.totalPages.push(i);
-      }
-    });
+      } 
   }
 
   public filter() {
-    this.characterService.filter(this.form.getRawValue()).subscribe((response: any) =>{
-      this.characters = response.results;
+    const isOddPage = this.currentPage % 2;
+    const serverPage = Math.floor(this.currentPage/2) + isOddPage;
+    this.characterService.getCharacters(serverPage, this.form.getRawValue()).subscribe({
+      next: (response: Response)=>{
+        if(isOddPage){
+          this.characters = response.results.slice(0,10);
+        }else{
+          this.characters = response.results.slice(10,20);
+        }
+        this.buildPaginator(response.info.pages * 2);
+      },
+      error: () =>{}
     })
   }
 }
