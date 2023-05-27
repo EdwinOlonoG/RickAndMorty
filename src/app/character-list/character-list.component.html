@@ -4,7 +4,7 @@
     </div>
 </div>
 <div>
-    <form [formGroup]="form" (ngSubmit)="filter()">
+    <form [formGroup]="form" (ngSubmit)="goToPage(1)">
         <input placeholder="name" formControlName="name">
         <select formControlName="status">
             <option value="">Status</option>
